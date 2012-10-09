@@ -6,7 +6,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
-import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
@@ -60,8 +59,8 @@ public class MainActivity extends MapActivity implements LocationListener {
 
 	public void onLocationChanged(Location location) {
 		mapView.getController().animateTo(
-				new GeoPoint((int) (location.getLatitude() * 1000000),
-						(int) (location.getLongitude() * 1000000)));
+				new GeoPointWrapper(location.getLatitude(), location
+						.getLongitude()).getGeoPoint());
 		mapView.getController().setZoom(13);
 	}
 
