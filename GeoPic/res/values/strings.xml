@@ -1,6 +1,5 @@
 <resources>
 
-    <string name="google_maps_api_key">04fKpWysRwLfzK2DYfeF6bLp6UGWaV3VhuWGMFw</string>
     
     <string name="app_name">GeoPic</string>
     <string name="title_activity_main">GeoPic</string>

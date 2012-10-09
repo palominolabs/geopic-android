@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="api_key_google_maps">04fKpWysRwLfzK2DYfeF6bLp6UGWaV3VhuWGMFw</string>
+    
+    <string name="api_key_foursquare_client_id">G1VAOKQBO0ALOV0WJ0F0CVRLQUABQN51VSCH5SDMHQ2KCHG5</string>
+    <string name="api_key_foursquare_client_secret">B3IJ4NOQXQY1R2CMLN4Q5DY1TG210YS433TXD4EAWN5O5BKT</string>
+    
+</resources>

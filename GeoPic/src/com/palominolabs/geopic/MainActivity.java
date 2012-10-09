@@ -21,8 +21,10 @@ public class MainActivity extends MapActivity implements LocationListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		foursquareVenuesFetcher = new FoursquareVenuesFetcher("G1VAOKQBO0ALOV0WJ0F0CVRLQUABQN51VSCH5SDMHQ2KCHG5", "B3IJ4NOQXQY1R2CMLN4Q5DY1TG210YS433TXD4EAWN5O5BKT");
-		
+		foursquareVenuesFetcher = new FoursquareVenuesFetcher(
+				getString(R.string.api_key_foursquare_client_id),
+				getString(R.string.api_key_foursquare_client_secret));
+
 		mapView = (MapView) findViewById(R.id.mapview);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		mapView.getOverlays().add(myLocationOverlay);
