@@ -1,6 +1,7 @@
 package com.palominolabs.geopic;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -15,6 +16,7 @@ public class MainActivity extends MapActivity implements LocationListener {
 	private MapView mapView;
 	private MyLocationOverlay myLocationOverlay;
 	private FoursquareVenuesFetcher foursquareVenuesFetcher;
+	private VenuesItemizedOverlay venuesItemizedOverlay;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,10 @@ public class MainActivity extends MapActivity implements LocationListener {
 		mapView = (MapView) findViewById(R.id.mapview);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		mapView.getOverlays().add(myLocationOverlay);
+		
+		Drawable mapMarker = getResources().getDrawable(R.drawable.map_marker);
+		venuesItemizedOverlay = new VenuesItemizedOverlay(mapMarker);
+		mapView.getOverlays().add(venuesItemizedOverlay);
 	}
 
 	@Override
@@ -69,7 +75,7 @@ public class MainActivity extends MapActivity implements LocationListener {
 		mapView.getController().animateTo(geoPointWrapper.getGeoPoint());
 		mapView.getController().setZoom(13);
 
-		new LoadVenuesNearAsyncTask(foursquareVenuesFetcher)
+		new LoadVenuesNearAsyncTask(foursquareVenuesFetcher, venuesItemizedOverlay)
 				.execute(geoPointWrapper);
 	}
 

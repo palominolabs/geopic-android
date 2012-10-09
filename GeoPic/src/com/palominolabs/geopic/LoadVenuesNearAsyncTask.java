@@ -9,10 +9,12 @@ public class LoadVenuesNearAsyncTask extends
 		AsyncTask<GeoPointWrapper, Void, List<Venue>> {
 
 	private final FoursquareVenuesFetcher foursquareVenuesFetcher;
+	private final VenuesItemizedOverlay venuesItemizedOverlay;
 
 	public LoadVenuesNearAsyncTask(
-			FoursquareVenuesFetcher foursquareVenuesFetcher) {
+			FoursquareVenuesFetcher foursquareVenuesFetcher, VenuesItemizedOverlay venuesItemizedOverlay) {
 		this.foursquareVenuesFetcher = foursquareVenuesFetcher;
+		this.venuesItemizedOverlay = venuesItemizedOverlay;
 	}
 
 	@Override
@@ -31,10 +33,7 @@ public class LoadVenuesNearAsyncTask extends
 
 	@Override
 	protected void onPostExecute(List<Venue> result) {
-		Trace.debug("Venues loaded: " + result.size());
-		for (Venue venue : result) {
-			Trace.debug("  " + venue.getName());
-		}
+		venuesItemizedOverlay.setVenues(result);
 	}
 
 }
