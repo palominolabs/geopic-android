@@ -2,3 +2,6 @@ GeoPic/bin
 .metadata
 GeoPic/.settings
 GeoPic/gen
+GeoPicTests/.settings
+GeoPicTests/bin
+GeoPicTests/gen
