@@ -32,6 +32,8 @@ public class VenuesItemizedOverlay extends ItemizedOverlay<VenueOverlayItem> {
 
 	private Venue venueShowingTooltip;
 
+	private OnVenueTooltipClickListener onVenueTooltipClickListener;
+
 	public VenuesItemizedOverlay(Drawable defaultMarker) {
 		super(boundCenterBottom(defaultMarker));
 
@@ -66,7 +68,7 @@ public class VenuesItemizedOverlay extends ItemizedOverlay<VenueOverlayItem> {
 
 	@Override
 	public synchronized boolean onTap(GeoPoint p, MapView mapView) {
-		if (venueShowingTooltip != null) {
+		if (onVenueTooltipClickListener != null && venueShowingTooltip != null) {
 			Rect tooltipBounds = getTooltipTextBounds(mapView);
 			tooltipBounds.inset(-(TOUCH_PADDING_PX + TOOLTIP_RADIUS_PX),
 					-(TOUCH_PADDING_PX + TOOLTIP_RADIUS_PX));
@@ -76,7 +78,8 @@ public class VenuesItemizedOverlay extends ItemizedOverlay<VenueOverlayItem> {
 
 			if (tooltipBounds
 					.contains(tapScreenPosition.x, tapScreenPosition.y)) {
-				Trace.debug("Tapped Venue Tooltip: " + venueShowingTooltip);
+				onVenueTooltipClickListener
+						.onVenueTooltipClicked(venueShowingTooltip);
 				return true;
 			}
 		}
@@ -126,18 +129,27 @@ public class VenuesItemizedOverlay extends ItemizedOverlay<VenueOverlayItem> {
 			throw new IllegalStateException(
 					"venueShowingTooltip shouldn't be null when this is called");
 		}
-		
+
 		Point tooltipScreenPosition = new Point();
 		mapView.getProjection().toPixels(
 				venueShowingTooltip.getLocation().getGeoPoint(),
 				tooltipScreenPosition);
-		
+
 		Rect textBounds = new Rect();
 		tooltipPaint.getTextBounds(venueShowingTooltip.getName(), 0,
 				venueShowingTooltip.getName().length(), textBounds);
 		textBounds.offset(-textBounds.centerX(), 0);
 		textBounds.offset(tooltipScreenPosition.x, tooltipScreenPosition.y);
-		
+
 		return textBounds;
+	}
+
+	public synchronized void setOnVenueTooltipClickListener(
+			OnVenueTooltipClickListener onVenueTooltipClickListener) {
+		this.onVenueTooltipClickListener = onVenueTooltipClickListener;
+	}
+
+	public interface OnVenueTooltipClickListener {
+		void onVenueTooltipClicked(Venue venue);
 	}
 }

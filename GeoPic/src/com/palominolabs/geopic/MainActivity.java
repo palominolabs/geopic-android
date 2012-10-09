@@ -1,6 +1,7 @@
 package com.palominolabs.geopic;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -10,8 +11,9 @@ import android.os.Bundle;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.palominolabs.geopic.VenuesItemizedOverlay.OnVenueTooltipClickListener;
 
-public class MainActivity extends MapActivity implements LocationListener {
+public class MainActivity extends MapActivity implements LocationListener, OnVenueTooltipClickListener {
 
 	private MapView mapView;
 	private MyLocationOverlay myLocationOverlay;
@@ -33,6 +35,7 @@ public class MainActivity extends MapActivity implements LocationListener {
 		
 		Drawable mapMarker = getResources().getDrawable(R.drawable.map_marker);
 		venuesItemizedOverlay = new VenuesItemizedOverlay(mapMarker);
+		venuesItemizedOverlay.setOnVenueTooltipClickListener(this);
 		mapView.getOverlays().add(venuesItemizedOverlay);
 	}
 
@@ -86,5 +89,11 @@ public class MainActivity extends MapActivity implements LocationListener {
 	}
 
 	public void onStatusChanged(String provider, int status, Bundle extras) {
+	}
+
+	public void onVenueTooltipClicked(Venue venue) {
+		Intent intent = new Intent(this, VenueDetailsActivity.class);
+		intent.putExtra("venue", venue);
+		startActivity(intent);
 	}
 }
