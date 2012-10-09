@@ -1,7 +1,5 @@
 package com.palominolabs.geopic;
 
-import java.util.List;
-
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -69,17 +67,8 @@ public class MainActivity extends MapActivity implements LocationListener {
 		mapView.getController().animateTo(geoPointWrapper.getGeoPoint());
 		mapView.getController().setZoom(13);
 
-		try {
-			List<Venue> venues = foursquareVenuesFetcher
-					.getVenuesNear(geoPointWrapper);
-			
-			Trace.debug("Venues loaded: " + venues.size());
-			for (Venue venue : venues) {
-				Trace.debug("  " + venue.getName());
-			}
-		} catch (Exception e) {
-			Trace.exception(e);
-		}
+		new LoadVenuesNearAsyncTask(foursquareVenuesFetcher)
+				.execute(geoPointWrapper);
 	}
 
 	public void onProviderDisabled(String provider) {
