@@ -14,15 +14,19 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
 
 public class VenuesItemizedOverlay extends ItemizedOverlay<VenueOverlayItem> {
+	private static final int TOUCH_PADDING_PX = 10;
 	private static final int TOOLTIP_TEXT_SIZE_PX = 25;
 	private static final int TOOLTIP_RADIUS_PX = 10;
 	private static final int TOOLTIP_BORDER_WIDTH_PX = 1;
 	private static final int TOOLTIP_BACKGROUND_COLOR = Color.WHITE;
 	private static final int TOOLTIP_TEXT_COLOR = Color.DKGRAY;
+
+	private final Paint tooltipPaint;
 
 	private List<Venue> venues;
 
@@ -30,6 +34,13 @@ public class VenuesItemizedOverlay extends ItemizedOverlay<VenueOverlayItem> {
 
 	public VenuesItemizedOverlay(Drawable defaultMarker) {
 		super(boundCenterBottom(defaultMarker));
+
+		tooltipPaint = new Paint();
+		tooltipPaint.setTextSize(TOOLTIP_TEXT_SIZE_PX);
+		tooltipPaint.setAntiAlias(true);
+		tooltipPaint.setStyle(Style.FILL_AND_STROKE);
+		tooltipPaint.setStrokeWidth(TOOLTIP_BORDER_WIDTH_PX);
+		tooltipPaint.setTextAlign(Align.CENTER);
 
 		this.venues = Collections.emptyList();
 		setVenues(new LinkedList<Venue>());
@@ -54,6 +65,26 @@ public class VenuesItemizedOverlay extends ItemizedOverlay<VenueOverlayItem> {
 	}
 
 	@Override
+	public synchronized boolean onTap(GeoPoint p, MapView mapView) {
+		if (venueShowingTooltip != null) {
+			Rect tooltipBounds = getTooltipTextBounds(mapView);
+			tooltipBounds.inset(-(TOUCH_PADDING_PX + TOOLTIP_RADIUS_PX),
+					-(TOUCH_PADDING_PX + TOOLTIP_RADIUS_PX));
+
+			Point tapScreenPosition = new Point();
+			mapView.getProjection().toPixels(p, tapScreenPosition);
+
+			if (tooltipBounds
+					.contains(tapScreenPosition.x, tapScreenPosition.y)) {
+				Trace.debug("Tapped Venue Tooltip: " + venueShowingTooltip);
+				return true;
+			}
+		}
+
+		return super.onTap(p, mapView);
+	}
+
+	@Override
 	protected synchronized boolean onTap(int index) {
 		venueShowingTooltip = venues.get(index);
 		return true;
@@ -71,37 +102,42 @@ public class VenuesItemizedOverlay extends ItemizedOverlay<VenueOverlayItem> {
 			return;
 		}
 
-		Point tooltipScreenPosition = new Point();
-		mapView.getProjection().toPixels(
-				venueShowingTooltip.getLocation().getGeoPoint(),
-				tooltipScreenPosition);
-
-		Paint paint = new Paint();
-		paint.setTextSize(TOOLTIP_TEXT_SIZE_PX);
-		paint.setAntiAlias(true);
-		paint.setStyle(Style.FILL_AND_STROKE);
-		paint.setStrokeWidth(TOOLTIP_BORDER_WIDTH_PX);
-		paint.setTextAlign(Align.CENTER);
-
-		Rect textBounds = new Rect();
-		paint.getTextBounds(venueShowingTooltip.getName(), 0,
-				venueShowingTooltip.getName().length(), textBounds);
-		textBounds.offset(-textBounds.centerX(), 0);
-		textBounds.offset(tooltipScreenPosition.x, tooltipScreenPosition.y);
+		Rect textBounds = getTooltipTextBounds(mapView);
 
 		RectF backgroundBounds = new RectF(textBounds);
 		backgroundBounds.inset(-TOOLTIP_RADIUS_PX, -TOOLTIP_RADIUS_PX);
 
-		paint.setColor(TOOLTIP_BACKGROUND_COLOR);
+		tooltipPaint.setColor(TOOLTIP_BACKGROUND_COLOR);
 		canvas.drawRoundRect(backgroundBounds, TOOLTIP_RADIUS_PX,
-				TOOLTIP_RADIUS_PX, paint);
+				TOOLTIP_RADIUS_PX, tooltipPaint);
 
-		paint.setColor(TOOLTIP_TEXT_COLOR);
-		paint.setStyle(Style.STROKE);
+		tooltipPaint.setColor(TOOLTIP_TEXT_COLOR);
+		tooltipPaint.setStyle(Style.STROKE);
 		canvas.drawRoundRect(backgroundBounds, TOOLTIP_RADIUS_PX,
-				TOOLTIP_RADIUS_PX, paint);
+				TOOLTIP_RADIUS_PX, tooltipPaint);
+
+		tooltipPaint.setStyle(Style.FILL);
+		canvas.drawText(venueShowingTooltip.getName(), textBounds.centerX(),
+				textBounds.centerY() + TOOLTIP_RADIUS_PX, tooltipPaint);
+	}
+
+	private Rect getTooltipTextBounds(MapView mapView) {
+		if (venueShowingTooltip == null) {
+			throw new IllegalStateException(
+					"venueShowingTooltip shouldn't be null when this is called");
+		}
 		
-		paint.setStyle(Style.FILL);
-		canvas.drawText(venueShowingTooltip.getName(), textBounds.centerX(), textBounds.centerY() + TOOLTIP_RADIUS_PX, paint);
+		Point tooltipScreenPosition = new Point();
+		mapView.getProjection().toPixels(
+				venueShowingTooltip.getLocation().getGeoPoint(),
+				tooltipScreenPosition);
+		
+		Rect textBounds = new Rect();
+		tooltipPaint.getTextBounds(venueShowingTooltip.getName(), 0,
+				venueShowingTooltip.getName().length(), textBounds);
+		textBounds.offset(-textBounds.centerX(), 0);
+		textBounds.offset(tooltipScreenPosition.x, tooltipScreenPosition.y);
+		
+		return textBounds;
 	}
 }
