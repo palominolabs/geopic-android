@@ -20,5 +20,13 @@ public final class Trace {
 		Log.d(TAG, msg);
 		
 	}
+
+	public static void exception(Throwable tr) {
+		if (!isLoggingEnabled()) {
+			return;
+		}
+		
+		Log.e(TAG, tr.getMessage(), tr);
+	}
 	
 }

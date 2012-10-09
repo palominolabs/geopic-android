@@ -1,5 +1,7 @@
 package com.palominolabs.geopic;
 
+import java.util.List;
+
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -14,12 +16,15 @@ public class MainActivity extends MapActivity implements LocationListener {
 
 	private MapView mapView;
 	private MyLocationOverlay myLocationOverlay;
+	private FoursquareVenuesFetcher foursquareVenuesFetcher;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		foursquareVenuesFetcher = new FoursquareVenuesFetcher("G1VAOKQBO0ALOV0WJ0F0CVRLQUABQN51VSCH5SDMHQ2KCHG5", "B3IJ4NOQXQY1R2CMLN4Q5DY1TG210YS433TXD4EAWN5O5BKT");
+		
 		mapView = (MapView) findViewById(R.id.mapview);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		mapView.getOverlays().add(myLocationOverlay);
@@ -58,10 +63,23 @@ public class MainActivity extends MapActivity implements LocationListener {
 	}
 
 	public void onLocationChanged(Location location) {
-		mapView.getController().animateTo(
-				new GeoPointWrapper(location.getLatitude(), location
-						.getLongitude()).getGeoPoint());
+		GeoPointWrapper geoPointWrapper = new GeoPointWrapper(
+				location.getLatitude(), location.getLongitude());
+
+		mapView.getController().animateTo(geoPointWrapper.getGeoPoint());
 		mapView.getController().setZoom(13);
+
+		try {
+			List<Venue> venues = foursquareVenuesFetcher
+					.getVenuesNear(geoPointWrapper);
+			
+			Trace.debug("Venues loaded: " + venues.size());
+			for (Venue venue : venues) {
+				Trace.debug("  " + venue.getName());
+			}
+		} catch (Exception e) {
+			Trace.exception(e);
+		}
 	}
 
 	public void onProviderDisabled(String provider) {
