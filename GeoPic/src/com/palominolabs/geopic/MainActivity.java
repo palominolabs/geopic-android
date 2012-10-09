@@ -6,6 +6,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
@@ -33,7 +34,7 @@ public class MainActivity extends MapActivity implements LocationListener {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
+
 		myLocationOverlay.enableMyLocation();
 
 		LocationManager locationManager = (LocationManager) this
@@ -51,14 +52,17 @@ public class MainActivity extends MapActivity implements LocationListener {
 		super.onPause();
 
 		myLocationOverlay.disableMyLocation();
-		
+
 		LocationManager locationManager = (LocationManager) this
 				.getSystemService(Context.LOCATION_SERVICE);
 		locationManager.removeUpdates(this);
 	}
 
 	public void onLocationChanged(Location location) {
-		Trace.debug("Location changed: " + location);
+		mapView.getController().animateTo(
+				new GeoPoint((int) (location.getLatitude() * 1000000),
+						(int) (location.getLongitude() * 1000000)));
+		mapView.getController().setZoom(13);
 	}
 
 	public void onProviderDisabled(String provider) {
