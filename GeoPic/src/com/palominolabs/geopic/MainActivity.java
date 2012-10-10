@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
 import com.google.android.maps.MapActivity;
@@ -17,7 +18,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.palominolabs.geopic.VenuesItemizedOverlay.OnVenueTooltipClickListener;
 
-public class MainActivity extends MapActivity implements LocationListener, OnVenueTooltipClickListener, OnItemClickListener {
+public class MainActivity extends MapActivity implements LocationListener, OnVenueTooltipClickListener, OnItemClickListener, OnItemLongClickListener {
 
 	private MapView mapView;
 	private VenuesAdapter venuesAdapter;
@@ -39,6 +40,7 @@ public class MainActivity extends MapActivity implements LocationListener, OnVen
 		ListView venuesList = (ListView)findViewById(R.id.main_activity_listview);
 		venuesList.setAdapter(venuesAdapter);
 		venuesList.setOnItemClickListener(this);
+		venuesList.setOnItemLongClickListener(this);
 		
 		mapView = (MapView) findViewById(R.id.mapview);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
@@ -114,5 +116,14 @@ public class MainActivity extends MapActivity implements LocationListener, OnVen
 		Intent intent = new Intent(this, VenueDetailsActivity.class);
 		intent.putExtra("venue", venue);
 		startActivity(intent);
+	}
+
+	public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		Venue venue = venuesAdapter.getItem(position);
+		mapView.getController().animateTo(venue.getLocation().getGeoPoint());
+		mapView.getController().setZoom(18);
+		
+		return true;
 	}
 }
