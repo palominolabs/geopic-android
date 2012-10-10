@@ -83,4 +83,15 @@
         android:text="(123) 456-7890"
         tools:ignore="HardcodedText" />
 
+    <ImageButton
+        android:id="@+id/venue_details_takePicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:contentDescription="@string/take_picture"
+        android:src="@android:drawable/ic_menu_camera"
+        tools:ignore="HardcodedText" />
+
 </RelativeLayout>

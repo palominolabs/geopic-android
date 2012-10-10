@@ -9,5 +9,6 @@
     <string name="category">Category</string>
     <string name="checkins">Checkins</string>
     <string name="phone">Phone</string>
+    <string name="take_picture">Take Picture</string>
 
 </resources>
