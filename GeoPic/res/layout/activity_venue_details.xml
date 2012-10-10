@@ -1,14 +1,86 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:paddingLeft="5dp" >
 
     <TextView
+        android:id="@+id/venue_details_nameLabel"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:paddingBottom="20dp"
+        android:paddingTop="1dp"
+        android:text="@string/name"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/venue_details_nameValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/hello_world"
-        tools:context=".VenueDetails" />
+        android:layout_toRightOf="@id/venue_details_nameLabel"
+        android:paddingBottom="20dp"
+        android:paddingTop="1dp"
+        android:text="My Store Thing"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/venue_details_categoryLabel"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/venue_details_nameLabel"
+        android:layout_below="@id/venue_details_nameLabel"
+        android:paddingBottom="20dp"
+        android:text="@string/category"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/venue_details_categoryValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/venue_details_nameValue"
+        android:layout_toRightOf="@id/venue_details_categoryLabel"
+        android:paddingBottom="20dp"
+        android:text="Stuff"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/venue_details_checkinsLabel"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/venue_details_categoryLabel"
+        android:layout_below="@id/venue_details_categoryLabel"
+        android:paddingBottom="20dp"
+        android:text="@string/checkins"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/venue_details_checkinsValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/venue_details_categoryValue"
+        android:layout_toRightOf="@id/venue_details_checkinsLabel"
+        android:paddingBottom="20dp"
+        android:text="1234"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/venue_details_formattedPhoneLabel"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/venue_details_checkinsLabel"
+        android:layout_below="@id/venue_details_checkinsLabel"
+        android:paddingBottom="20dp"
+        android:text="@string/phone"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/venue_details_formattedPhoneValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/venue_details_checkinsValue"
+        android:layout_toRightOf="@id/venue_details_formattedPhoneLabel"
+        android:paddingBottom="20dp"
+        android:text="(123) 456-7890"
+        tools:ignore="HardcodedText" />
 
 </RelativeLayout>
