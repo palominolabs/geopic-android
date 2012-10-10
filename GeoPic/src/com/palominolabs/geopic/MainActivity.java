@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.widget.ListView;
 
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -16,9 +17,11 @@ import com.palominolabs.geopic.VenuesItemizedOverlay.OnVenueTooltipClickListener
 public class MainActivity extends MapActivity implements LocationListener, OnVenueTooltipClickListener {
 
 	private MapView mapView;
+	private VenuesAdapter venuesAdapter;
 	private MyLocationOverlay myLocationOverlay;
 	private FoursquareVenuesFetcher foursquareVenuesFetcher;
 	private VenuesItemizedOverlay venuesItemizedOverlay;
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,10 @@ public class MainActivity extends MapActivity implements LocationListener, OnVen
 				getString(R.string.api_key_foursquare_client_id),
 				getString(R.string.api_key_foursquare_client_secret));
 
+		venuesAdapter = new VenuesAdapter(this);
+		ListView venuesList = (ListView)findViewById(R.id.main_activity_listview);
+		venuesList.setAdapter(venuesAdapter);
+		
 		mapView = (MapView) findViewById(R.id.mapview);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		mapView.getOverlays().add(myLocationOverlay);
@@ -78,7 +85,7 @@ public class MainActivity extends MapActivity implements LocationListener, OnVen
 		mapView.getController().animateTo(geoPointWrapper.getGeoPoint());
 		mapView.getController().setZoom(13);
 
-		new LoadVenuesNearAsyncTask(foursquareVenuesFetcher, venuesItemizedOverlay)
+		new LoadVenuesNearAsyncTask(foursquareVenuesFetcher, venuesItemizedOverlay, venuesAdapter)
 				.execute(geoPointWrapper);
 	}
 

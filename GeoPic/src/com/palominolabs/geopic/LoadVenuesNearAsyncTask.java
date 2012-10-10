@@ -10,11 +10,15 @@ public class LoadVenuesNearAsyncTask extends
 
 	private final FoursquareVenuesFetcher foursquareVenuesFetcher;
 	private final VenuesItemizedOverlay venuesItemizedOverlay;
+	private final VenuesAdapter venuesAdapter;
 
 	public LoadVenuesNearAsyncTask(
-			FoursquareVenuesFetcher foursquareVenuesFetcher, VenuesItemizedOverlay venuesItemizedOverlay) {
+			FoursquareVenuesFetcher foursquareVenuesFetcher,
+			VenuesItemizedOverlay venuesItemizedOverlay,
+			VenuesAdapter venuesAdapter) {
 		this.foursquareVenuesFetcher = foursquareVenuesFetcher;
 		this.venuesItemizedOverlay = venuesItemizedOverlay;
+		this.venuesAdapter = venuesAdapter;
 	}
 
 	@Override
@@ -34,6 +38,7 @@ public class LoadVenuesNearAsyncTask extends
 	@Override
 	protected void onPostExecute(List<Venue> result) {
 		venuesItemizedOverlay.setVenues(result);
+		venuesAdapter.setVenues(result);
 	}
 
 }

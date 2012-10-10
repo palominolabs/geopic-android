@@ -1,5 +1,7 @@
 <resources>
 
     <style name="AppTheme" parent="android:Theme.Light" />
+    
+    <dimen name="venues_list_padding">10dp</dimen>
 
 </resources>
