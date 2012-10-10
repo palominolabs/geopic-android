@@ -7,6 +7,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.google.android.maps.MapActivity;
@@ -14,7 +17,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.palominolabs.geopic.VenuesItemizedOverlay.OnVenueTooltipClickListener;
 
-public class MainActivity extends MapActivity implements LocationListener, OnVenueTooltipClickListener {
+public class MainActivity extends MapActivity implements LocationListener, OnVenueTooltipClickListener, OnItemClickListener {
 
 	private MapView mapView;
 	private VenuesAdapter venuesAdapter;
@@ -35,6 +38,7 @@ public class MainActivity extends MapActivity implements LocationListener, OnVen
 		venuesAdapter = new VenuesAdapter(this);
 		ListView venuesList = (ListView)findViewById(R.id.main_activity_listview);
 		venuesList.setAdapter(venuesAdapter);
+		venuesList.setOnItemClickListener(this);
 		
 		mapView = (MapView) findViewById(R.id.mapview);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
@@ -99,6 +103,14 @@ public class MainActivity extends MapActivity implements LocationListener, OnVen
 	}
 
 	public void onVenueTooltipClicked(Venue venue) {
+		openDetailsActivity(venue);
+	}
+
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		openDetailsActivity(venuesAdapter.getItem(position));
+	}
+	
+	private void openDetailsActivity(Venue venue) {
 		Intent intent = new Intent(this, VenueDetailsActivity.class);
 		intent.putExtra("venue", venue);
 		startActivity(intent);
