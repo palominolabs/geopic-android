@@ -18,7 +18,6 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.palominolabs.geopic.VenuesItemizedOverlay.OnVenueTooltipClickListener;
 import com.stackmob.android.sdk.common.StackMobAndroid;
-import com.stackmob.sdk.api.StackMob;
 
 public class MainActivity extends MapActivity implements LocationListener,
 		OnVenueTooltipClickListener, OnItemClickListener,

@@ -13,6 +13,8 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.palominolabs.geopic.AuthHelper.Callback;
+import com.stackmob.sdk.api.StackMobFile;
+
 public class VenueDetailsActivity extends Activity {
 
 	private static final int TAKE_PICTURE_REQUEST_CODE = 1;
@@ -72,11 +74,15 @@ public class VenueDetailsActivity extends Activity {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		bitmap.compress(CompressFormat.JPEG, 100, baos);
 
-		byte[] photoBytes = baos.toByteArray();
-		Trace.debug("Got JPEG with byte size: " + photoBytes.length);
+		final byte[] pictureBytes = baos.toByteArray();
+
 		AuthHelper.withLoggedInUser(this, new Callback() {
 
 			public void call(String userId) {
+				StackMobFile picture = new StackMobFile("image/jpeg",
+						"image.jpg", pictureBytes);
+				VenuePicture venuePicture = new VenuePicture(venue.getFoursquareId(), venue.getName(), picture);
+				venuePicture.save();
 			}
 		});
 
