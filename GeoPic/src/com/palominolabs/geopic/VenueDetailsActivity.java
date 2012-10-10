@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import com.palominolabs.geopic.AuthHelper.Callback;
 public class VenueDetailsActivity extends Activity {
 
 	private static final int TAKE_PICTURE_REQUEST_CODE = 1;
@@ -73,6 +74,12 @@ public class VenueDetailsActivity extends Activity {
 
 		byte[] photoBytes = baos.toByteArray();
 		Trace.debug("Got JPEG with byte size: " + photoBytes.length);
+		AuthHelper.withLoggedInUser(this, new Callback() {
+
+			public void call(String userId) {
+			}
+		});
+
 	}
 
 }

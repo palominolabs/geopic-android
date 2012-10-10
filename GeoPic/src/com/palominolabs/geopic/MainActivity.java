@@ -17,35 +17,41 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.palominolabs.geopic.VenuesItemizedOverlay.OnVenueTooltipClickListener;
+import com.stackmob.android.sdk.common.StackMobAndroid;
+import com.stackmob.sdk.api.StackMob;
 
-public class MainActivity extends MapActivity implements LocationListener, OnVenueTooltipClickListener, OnItemClickListener, OnItemLongClickListener {
+public class MainActivity extends MapActivity implements LocationListener,
+		OnVenueTooltipClickListener, OnItemClickListener,
+		OnItemLongClickListener {
 
 	private MapView mapView;
 	private VenuesAdapter venuesAdapter;
 	private MyLocationOverlay myLocationOverlay;
 	private FoursquareVenuesFetcher foursquareVenuesFetcher;
 	private VenuesItemizedOverlay venuesItemizedOverlay;
-	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		StackMobAndroid.init(getApplicationContext(), 0,
+				getString(R.string.api_key_stackmob_public_key));
+		
 		foursquareVenuesFetcher = new FoursquareVenuesFetcher(
 				getString(R.string.api_key_foursquare_client_id),
 				getString(R.string.api_key_foursquare_client_secret));
 
 		venuesAdapter = new VenuesAdapter(this);
-		ListView venuesList = (ListView)findViewById(R.id.main_activity_listview);
+		ListView venuesList = (ListView) findViewById(R.id.main_activity_listview);
 		venuesList.setAdapter(venuesAdapter);
 		venuesList.setOnItemClickListener(this);
 		venuesList.setOnItemLongClickListener(this);
-		
+
 		mapView = (MapView) findViewById(R.id.mapview);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		mapView.getOverlays().add(myLocationOverlay);
-		
+
 		Drawable mapMarker = getResources().getDrawable(R.drawable.map_marker);
 		venuesItemizedOverlay = new VenuesItemizedOverlay(mapMarker);
 		venuesItemizedOverlay.setOnVenueTooltipClickListener(this);
@@ -91,8 +97,8 @@ public class MainActivity extends MapActivity implements LocationListener, OnVen
 		mapView.getController().animateTo(geoPointWrapper.getGeoPoint());
 		mapView.getController().setZoom(13);
 
-		new LoadVenuesNearAsyncTask(foursquareVenuesFetcher, venuesItemizedOverlay, venuesAdapter)
-				.execute(geoPointWrapper);
+		new LoadVenuesNearAsyncTask(foursquareVenuesFetcher,
+				venuesItemizedOverlay, venuesAdapter).execute(geoPointWrapper);
 	}
 
 	public void onProviderDisabled(String provider) {
@@ -108,22 +114,23 @@ public class MainActivity extends MapActivity implements LocationListener, OnVen
 		openDetailsActivity(venue);
 	}
 
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
 		openDetailsActivity(venuesAdapter.getItem(position));
 	}
-	
+
 	private void openDetailsActivity(Venue venue) {
 		Intent intent = new Intent(this, VenueDetailsActivity.class);
 		intent.putExtra("venue", venue);
 		startActivity(intent);
 	}
 
-	public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
-			long id) {
+	public boolean onItemLongClick(AdapterView<?> parent, View view,
+			int position, long id) {
 		Venue venue = venuesAdapter.getItem(position);
 		mapView.getController().animateTo(venue.getLocation().getGeoPoint());
 		mapView.getController().setZoom(18);
-		
+
 		return true;
 	}
 }
