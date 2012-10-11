@@ -13,6 +13,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
+import com.eightysteve.KISSmetrics.KISSmetricsAPI;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
@@ -33,6 +34,10 @@ public class MainActivity extends MapActivity implements LocationListener,
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		KISSmetricsAPI.sharedAPI(getString(R.string.api_key_kissmetrics), getApplicationContext(), true);
+		
+		KISSmetricsAPI.sharedAPI().recordEvent("launch", null);
 
 		StackMobAndroid.init(getApplicationContext(), 0,
 				getString(R.string.api_key_stackmob_public_key));
@@ -65,6 +70,8 @@ public class MainActivity extends MapActivity implements LocationListener,
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
+		KISSmetricsAPI.sharedAPI().recordEvent("view_nearby_venues", null);
 
 		myLocationOverlay.enableMyLocation();
 

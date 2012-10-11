@@ -1,6 +1,7 @@
 package com.palominolabs.geopic;
 
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import com.eightysteve.KISSmetrics.KISSmetricsAPI;
 import com.palominolabs.geopic.AuthHelper.Callback;
 import com.stackmob.sdk.api.StackMobFile;
 
@@ -27,7 +29,11 @@ public class VenueDetailsActivity extends Activity {
 		setContentView(R.layout.activity_venue_details);
 
 		venue = (Venue) getIntent().getExtras().getSerializable("venue");
-
+		
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put("foursquare_id",	venue.getFoursquareId());
+		KISSmetricsAPI.sharedAPI().recordEvent("view_venue", properties);
+		
 		setTitle(venue.getName());
 
 		TextView venueNameView = (TextView) findViewById(R.id.venue_details_nameValue);
@@ -53,6 +59,11 @@ public class VenueDetailsActivity extends Activity {
 	}
 
 	private void takePicture() {
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put("foursquare_id",	venue.getFoursquareId());
+		
+		KISSmetricsAPI.sharedAPI().recordEvent("start_taking_picture", properties);
+		
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		startActivityForResult(takePictureIntent, TAKE_PICTURE_REQUEST_CODE);
 	}
@@ -70,6 +81,11 @@ public class VenueDetailsActivity extends Activity {
 		if (data == null || data.getExtras() == null || !data.getExtras().containsKey("data")) {
 			return;
 		}
+
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put("foursquare_id",	venue.getFoursquareId());
+		KISSmetricsAPI.sharedAPI().recordEvent("took_picture", properties);
+		
 		Bitmap bitmap = (Bitmap) data.getExtras().get("data");
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		bitmap.compress(CompressFormat.JPEG, 100, baos);
